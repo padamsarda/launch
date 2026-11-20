@@ -187,10 +187,10 @@ function arm(bx,by,tx,ty,L1,L2,grip){const dx=tx-bx,dy=ty-by,d=Math.max(4,Math.m
   seg(bx,by,ex,ey,4.6);seg(ex,ey,wx,wy,3.8);const an=Math.atan2(wy-ey,wx-ex);c.save();c.translate(wx,wy);c.rotate(an);c.fillStyle='#5A606B';c.fillRect(-1,-4.5,7,9);
   for(const g of[-1,1]){c.save();c.translate(6,g*3.4);c.rotate(g*(.1+.65*grip));c.strokeStyle=col.accent;c.lineWidth=2.3;c.lineCap='round';c.lineJoin='round';c.beginPath();c.moveTo(0,0);c.lineTo(8,0);c.lineTo(11.5,-g*2.8);c.stroke();c.restore()}c.restore();
   for(const[x,y]of[[bx,by],[ex,ey],[wx,wy]]){c.fillStyle='#C9A24A';c.beginPath();c.arc(x,y,3.3,0,TAU);c.fill();c.strokeStyle='#5C4415';c.lineWidth=.9;c.stroke()}}
-function flap(x0,y0,sg,e,cv){const N=12,L=e*68,sl=L/N;if(L<1)return;let x=x0,y=y0,a=PI-sg*.62;const p=[[x,y,a]];
+function flap(x0,y0,sg,e,cv){const N=10,L=e*68,sl=L/N;if(L<1)return;let x=x0,y=y0,a=PI-sg*.62;const p=[[x,y,a]];
   for(let i=0;i<N;i++){x+=Math.cos(a)*sl;y+=Math.sin(a)*sl;a+=sg*cv*2.1/N*(.55+.9*i/N);p.push([x,y,a])}
-  c.lineCap='round';c.lineJoin='round';c.strokeStyle='#3A3F48';c.lineWidth=8.5;c.beginPath();p.forEach((q,i)=>i?c.lineTo(q[0],q[1]):c.moveTo(q[0],q[1]));c.stroke();c.strokeStyle='#14161A';c.lineWidth=6.5;c.stroke();
-  c.strokeStyle='#D9DCE2';c.lineWidth=1.3;c.beginPath();for(let i=1;i<p.length;i++){const[qx,qy,qa]=p[i],nx=-Math.sin(qa),ny=Math.cos(qa);c.moveTo(qx-nx*2.6,qy-ny*2.6);c.lineTo(qx+nx*2.6,qy+ny*2.6)}c.stroke()}
+  c.lineCap='round';c.lineJoin='round';c.strokeStyle='#3A3F48';c.lineWidth=5.2;c.beginPath();p.forEach((q,i)=>i?c.lineTo(q[0],q[1]):c.moveTo(q[0],q[1]));c.stroke();c.strokeStyle='#14161A';c.lineWidth=3.6;c.stroke();
+  c.strokeStyle='#D9DCE2';c.lineWidth=.9;c.beginPath();for(let i=1;i<p.length;i++){const[qx,qy,qa]=p[i],nx=-Math.sin(qa),ny=Math.cos(qa);c.moveTo(qx-nx*1.7,qy-ny*1.7);c.lineTo(qx+nx*1.7,qy+ny*1.7)}c.stroke()}
 function miniSat(x,y,s=1,a=0){c.save();c.translate(x,y);c.rotate(a);c.scale(s,s);panel(-13,-2.5,7,5,2,1,'#15214A','#5B7FD0');panel(6,-2.5,7,5,2,1,'#15214A','#5B7FD0');bus(-6,-5,12,10,'#E7EAF0','#9AA2AE');c.restore()}
 function handoff(lx,ly,lbl,dw){const[x,y]=L2S(lx,ly);const r=S.r*Math.hypot(x-CX,y-CY)/Math.hypot(S.x-CX,S.y-CY);extra.push({th:S.th-.004,r,w:S.w*dw,lbl})}
 // ---------- satellite models (local: +y = nadir, +x = along-track) ----------
@@ -333,19 +333,19 @@ const MIS={
     c.strokeStyle=rgba(t>3.2?col.go:col.warn,.8);c.lineWidth=1.2;c.beginPath();c.arc(p[0],p[1],12+Math.sin(T*8)*2,0,TAU);c.stroke();tag(p[0],p[1],t>3.2?'MISS 2.4 KM · SAFE':'DEBRIS · TCA '+Math.max(0,(this.dth/S.w)).toFixed(1)+' S',t>3.2?col.go:col.warn,-14,16);
     if(t>3.2&&t<3.3)setStatus('COLLISION AVOIDED · SPACE KEPT SAFE',true);return t>4.4}},
  capture:{speed:.8, // Cosmoserve — soft flaps (pseudopod embrace)
-  idle(){st.ox=0;st.tx=-132;st.ty=-3;st.spin=(st.spin||0)+DT*.6;st.e=.22+.03*Math.sin(T*1.4);st.cv=.05;st.ta=1;st.reent=0;st.burn=0},
-  local(){const ox=st.ox||0;drawModel('defunct',st.tx,st.ty,{spin:st.spin},0,st.ta,.72);
+  idle(){st.ox=0;st.tx=-132;st.ty=-3;st.spin=(st.spin||0)+DT*.6;st.e=.6;st.cv=.04+.03*Math.sin(T*1.4);st.ta=1;st.reent=0;st.burn=0},
+  local(){const ox=st.ox||0;drawModel('defunct',st.tx,st.ty,{spin:st.spin},0,st.ta,.6);
     if(st.reent>0){glow(st.tx,st.ty,24*st.reent,'#FF7A2E',.8*st.reent);glow(st.tx+10,st.ty-6,40*st.reent,'#FFB45A',.35*st.reent)}
     flap(ox-23,-17,-1,st.e,st.cv);flap(ox-23,11,1,st.e,st.cv);
     if(MS.phase==='climax'&&MS.t<1.6&&((MS.t*5)%1)<.5)for(const y of[-14,8])plume(ox+19,y,0,12,2.5,'rgba(255,245,230,.85)','rgba(255,190,120,.35)');
     if(st.burn)plume(ox+24,-6,0,46,7,'rgba(255,240,210,.95)','rgba(255,160,80,.5)')},
-  climax(t){if(t<.05){setStatus('APPROACH · FLAPS UNFURLING',true);this.r0=S.r;orbitGhost=S.r;this.s0=null;this.ph=0}
+  climax(t){if(t<.05){setStatus('APPROACH · FLAPS OPEN',true);this.r0=S.r;orbitGhost=S.r;this.s0=null;this.ph=0}
     const say=(n,m)=>{if(this.ph<n){this.ph=n;setStatus(m,true)}};
-    if(t<1.6){const k=ease(t/1.6);st.ox=lerp(0,-77,k);st.e=lerp(.22,1,k);st.cv=.05*(1-k);st.spin+=DT*.6}
+    if(t<1.6){const k=ease(t/1.6);st.ox=lerp(0,-88,k);st.e=.6;st.cv=.05*(1-k);st.spin+=DT*.6}
     else if(t<2.6){say(1,'EMBRACE · FLAPS WRAP THE TARGET');st.cv=ease((t-1.6)/1);if(this.s0==null){this.s0=st.spin;this.s1=Math.ceil(st.spin/TAU)*TAU}st.spin=lerp(this.s0,this.s1,ease((t-1.6)/1))}
     else if(t<3.2){say(2,'SOFT CAPTURE · NO GRAPPLE FIXTURE NEEDED')}
     else if(t<5.6){say(3,'DE-ORBIT BURN · LOWERING PERIGEE');st.burn=1;S.r=this.r0-(this.r0-1.08)*ease((t-3.2)/2.4)}
-    else{st.burn=0;const k=t-5.6;say(4,'RELEASE · FLAPS OPEN · TARGET BURNS UP');st.cv=Math.max(0,1-k*1.4);st.e=k<1?1:Math.max(.22,1-(k-1)*.9);st.ty=-3+k*24;st.tx=-132-k*10;st.reent=Math.min(1,k*1.4);st.ta=Math.max(0,1-Math.max(0,k-.7)/.9)}
+    else{st.burn=0;const k=t-5.6;say(4,'RELEASE · FLAPS OPEN · TARGET BURNS UP');st.cv=Math.max(0,1-k*1.4);st.e=.6;st.ty=-3+k*24;st.tx=-132-k*10;st.reent=Math.min(1,k*1.4);st.ta=Math.max(0,1-Math.max(0,k-.7)/.9)}
     return t>7.6}},
  dock:{ // Aule
   idle(){st.jy=-150+Math.sin(T*.8)*4},
